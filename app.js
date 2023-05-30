@@ -1,12 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
 const bodyParser = require('body-parser');
 const router = require('./routes');
 
 const app = express();
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(router);
 
@@ -18,7 +15,6 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
-  console.log('Бд подключена'),
 );
 
 app.listen(3000, () => console.log('started'));
