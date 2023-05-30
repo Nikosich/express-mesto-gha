@@ -7,8 +7,6 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use(router);
-
 mongoose.connect(
   'mongodb://127.0.0.1:27017/mestodb',
   {
@@ -26,3 +24,5 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(router);
