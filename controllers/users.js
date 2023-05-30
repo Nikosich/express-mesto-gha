@@ -16,7 +16,7 @@ const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(notFoundError).send({ messege: 'Пользователь не найден' });
+        return res.status(notFoundError).send({ message: 'Пользователь не найден' });
       }
       return res.status(200).send(user);
     })
@@ -35,7 +35,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(reqError).send({ messege: 'Некорректные данные' });
+        return res.status(reqError).send({ message: 'Некорректные данные' });
       }
       return next(err);
     });
@@ -51,7 +51,7 @@ const updateUser = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(reqError).send({ messege: 'Некорректные данные' });
+        return res.status(reqError).send({ message: 'Некорректные данные' });
       }
       return next(err);
     });
@@ -67,7 +67,7 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(reqError).send({ messege: 'Некорректные данные' });
+        return res.status(reqError).send({ message: 'Некорректные данные' });
       }
       return next(err);
     });
