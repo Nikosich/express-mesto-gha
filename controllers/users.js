@@ -20,7 +20,13 @@ const getUserById = (req, res, next) => {
       }
       return res.status(200).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(reqError).send({ message: 'Некорректные данные' });
+      }
+
+      return next(err);
+    });
 };
 
 const createUser = (req, res, next) => {
