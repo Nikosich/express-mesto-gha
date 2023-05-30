@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const {
   notFoundError,
@@ -8,6 +9,8 @@ const {
 const router = require('./routes');
 
 const app = express();
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 
