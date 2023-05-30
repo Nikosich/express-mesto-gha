@@ -14,7 +14,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400)({ message: 'Некорректные данные' });
+        return res.status(400).send({ message: 'Некорректные данные' });
       }
       return next(err);
     });
@@ -26,7 +26,7 @@ const deleteCard = (req, res, next) => {
     /* eslint-disable consistent-return */
     .then((card) => {
       if (!card) {
-        return res.status(404)({ messege: 'Карточка не найдена' });
+        return res.status(404).send({ messege: 'Карточка не найдена' });
       }
       Card.findByIdAndRemove(cardId)
         .then((deletedCard) => res.status(200).send(deletedCard))
@@ -43,7 +43,7 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404)({ messege: 'Карточка не найдена' });
+        return res.status(404).send({ messege: 'Карточка не найдена' });
       }
       return res.status(200).send(card);
     })
@@ -58,7 +58,7 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404)({ messege: 'Карточка не найдена' });
+        return res.status(404).send({ messege: 'Карточка не найдена' });
       }
       return res.status(200).send(card);
     })
