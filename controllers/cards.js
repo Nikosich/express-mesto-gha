@@ -32,13 +32,19 @@ const deleteCard = (req, res, next) => {
     /* eslint-disable consistent-return */
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ messege: 'Карточка не найдена' });
+        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
       }
       Card.findByIdAndRemove(cardId)
         .then((deletedCard) => res.status(200).send(deletedCard))
         .catch(next);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(reqError).send({ message: 'Некорректные данные' });
+      }
+
+      return next(err);
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -49,11 +55,17 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ messege: 'Карточка не найдена' });
+        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
       }
       return res.status(200).send(card);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(reqError).send({ message: 'Некорректные данные' });
+      }
+
+      return next(err);
+    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -64,11 +76,17 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ messege: 'Карточка не найдена' });
+        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
       }
       return res.status(200).send(card);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(reqError).send({ message: 'Некорректные данные' });
+      }
+
+      return next(err);
+    });
 };
 
 module.exports = {
