@@ -5,9 +5,9 @@ const router = require('./routes');
 
 const app = express();
 
-app.use(router);
-
 app.use(bodyParser.json());
+
+app.use(router);
 
 mongoose.connect(
   'mongodb://127.0.0.1:27017/mestodb',
