@@ -25,7 +25,11 @@ const getUserById = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const data = req.body;
-  User.create(data)
+  User.create({
+    name: data.name,
+    about: data.about,
+    avatar: data.avatar,
+  })
     .then((user) => {
       res.status(201).send(user);
     })
