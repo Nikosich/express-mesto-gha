@@ -1,13 +1,15 @@
 const Card = require('../models/card');
 
-const reqError = 400;
-
-const notFoundError = 404;
+const {
+  reqError,
+  notFoundError,
+  serverError,
+} = require('../errors/errors');
 
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }))
+    .catch(() => res.status(serverError).send({ message: 'Ошибка сервера' }))
     .catch(next);
 };
 
