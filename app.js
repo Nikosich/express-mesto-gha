@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {
+  notFoundError,
+} = require('./errors/errors');
 
 const router = require('./routes');
 
@@ -27,3 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.use(router);
+
+app.use('*', (req, res) => {
+  res.status(notFoundError).send({ message: 'Такой страницы нет' });
+});
