@@ -75,11 +75,11 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ReqError('Некоректные данные.'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new ConflictError('Пользователь с таким email зарегеситрирован'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
