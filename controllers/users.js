@@ -5,6 +5,7 @@ const User = require('../models/user');
 const ConflictError = require('../errors/ConflictError');
 const ReqError = require('../errors/ReqError');
 const NotFoundError = require('../errors/NotFoundError');
+const AuthorizationError = require('../errors/AuthorizationError')
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -19,7 +20,7 @@ const login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
           if (!isValidPassword) {
-            return next(new ReqError('Некоректные данные.'));
+            return next(new AuthorizationError('Неверные данные'));
           }
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secretKey', { expiresIn: '7d' });
           return res.status(200).send({ token });
@@ -34,23 +35,24 @@ const getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
 };
 
-const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail(new Error('NotValidId'))
+function getUserById(req, res, next) {
+  const { id } = req.params;
+
+  User
+    .findById(id)
     .then((user) => {
-      res.status(200).send(user);
+      if (user) return res.send({ user });
+
+      throw new NotFoundError('Пользователь не найден');
     })
     .catch((err) => {
-      if (err.message === 'NotValidId') {
-        return next(new NotFoundError('Пользователь не найден'));
-      }
       if (err.name === 'CastError') {
-        return next(new ReqError('Некоректные данные.'));
+        next(new ReqError('Некоректные данные.'));
+      } else {
+        next(err);
       }
-
-      return next(err);
     });
-};
+}
 
 const getUserMe = (req, res, next) => {
   const { _id } = req.user;

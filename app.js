@@ -25,6 +25,14 @@ const router = require('./routes');
 
 const app = express();
 
+mongoose.connect(
+  'mongodb://127.0.0.1:27017/mestodb',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+);
+
 const { PORT = 3000 } = process.env;
 
 app.use(helmet());
@@ -60,13 +68,5 @@ app.use('*', (req, res) => {
 
 app.use(errors());
 app.use(errorHandler);
-
-mongoose.connect(
-  'mongodb://127.0.0.1:27017/mestodb',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-);
 
 app.listen(PORT, () => console.log('started'));
