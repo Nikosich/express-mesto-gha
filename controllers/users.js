@@ -20,7 +20,7 @@ const login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
           if (!isValidPassword) {
-            return next(new ReqError('Некоректные данные.'));
+            return next(new AuthorizationError('Неверные данные'));
           }
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secretKey', { expiresIn: '7d' });
           return res.status(200).send({ token });
@@ -71,7 +71,7 @@ const createUser = (req, res, next) => {
 
   return User.findOne({ email }).then((user) => {
     if (user) {
-      next(new ConflictError('Пользователь с таким email зарегеситрирован'));
+      next(new ConflictError('Этот email уже зарегестрирован'));
     }
 
     return bcrypt.hash(password, 10);
@@ -83,7 +83,7 @@ const createUser = (req, res, next) => {
       about: req.body.about,
       avatar: req.body.avatar,
     }))
-    .then((user) => res.status(200).send({
+    .then((user) => res.status(201).send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
@@ -92,7 +92,10 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ReqError('Некоректные данные.'));
+        return next(new ReqError('Некоректные данные.'));
+      }
+      if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с таким email уже существует'));
       }
       return next(err);
     });
