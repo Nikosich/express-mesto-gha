@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const ConflictError = require('../errors/ConflictError');
 const ReqError = require('../errors/ReqError');
 const NotFoundError = require('../errors/NotFoundError');
 
@@ -69,6 +70,9 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ReqError('Некоректные данные.'));
+      }
+      if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с таким email зарегеситрирован'));
       }
       return next(err);
     });
