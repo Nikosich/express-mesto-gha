@@ -25,17 +25,11 @@ const router = require('./routes');
 
 const app = express();
 
+const { PORT = 3000 } = process.env;
+
 app.use(helmet());
 
 app.use(bodyParser.json());
-
-mongoose.connect(
-  'mongodb://127.0.0.1:27017/mestodb',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -67,4 +61,12 @@ app.use('*', (req, res) => {
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(3000, () => console.log('started'));
+mongoose.connect(
+  'mongodb://127.0.0.1:27017/mestodb',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+);
+
+app.listen(PORT, () => console.log('started'));

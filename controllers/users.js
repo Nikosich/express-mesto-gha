@@ -1,3 +1,4 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -7,22 +8,26 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
+
+  User
+    .findOne({ email })
+    .select('+password')
     .then((user) => {
-      if (!user || !password) {
-        return next(new ReqError('Неверные данные.'));
+      if (!user) {
+        return next(new ReqError('Некоректные данные.'));
       }
-      const token = jwt.sign(
-        { _id: user._id },
-        'some-secret-key',
-        {
-          expiresIn: '7d',
-        },
-      );
-      return res.send({ token });
+      return bcrypt.compare(password, user.password)
+        .then((isValidPassword) => {
+          if (!isValidPassword) {
+            return next(new ReqError('Некоректные данные.'));
+          }
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+          return res.status(200).send({ token });
+        });
     })
     .catch(next);
 };
+
 
 const getUsers = (req, res) => {
   User.find({})
