@@ -1,24 +1,20 @@
 const jwt = require('jsonwebtoken');
 const AuthorizationError = require('../errors/AuthorizationError');
-const { secretKey } = require('../utils/consts');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
-
-  if (!token) {
+  const { authorization } = req.headers;
+  const JWT_SECRET = 'secret-key';
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     return next(new AuthorizationError('Не авторизованный пользователь'));
   }
-
+  const token = authorization.replace('Bearer ', '');
   let payload;
-
   try {
-    payload = jwt.verify(token, secretKey);
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return next(new AuthorizationError('Не авторизованный пользователь'));
   }
 
   req.user = payload;
-
-  return next();
+  next();
 };
-
