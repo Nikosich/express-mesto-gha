@@ -28,11 +28,15 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
+  const { _id } = req.user;
   Card.findById(cardId)
     /* eslint-disable consistent-return */
     .then((card) => {
       if (!card) {
         return res.status(notFoundError).send({ message: 'Карточка не найдена' });
+      }
+      if (card.owner.valueOf() !== _id) {
+        return res.status(403).send({ message: 'Чужуж карточку удалить нельзя' });
       }
       Card.findByIdAndRemove(cardId)
         .then((deletedCard) => res.status(200).send(deletedCard))

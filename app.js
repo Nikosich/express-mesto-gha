@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const auth = require('./middlewares/auth');
 const {
   notFoundError,
 } = require('./errors/errors');
@@ -9,6 +10,8 @@ const {
 const router = require('./routes');
 
 const app = express();
+
+app.use(auth);
 
 app.use(helmet());
 
@@ -21,14 +24,6 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
 );
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '647514a7c4be2d89631ad9a5',
-  };
-
-  next();
-});
 
 app.use(router);
 
