@@ -37,23 +37,9 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-
-    .orFail(new Error('NotValidId'))
-
-    .then((user) => {
-      res.status(200).send(user);
-    })
-
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        return next(new NotFoundError('Пользователь не найден'));
-      }
-
-      if (err.name === 'CastError') {
-        return next(new ReqError('Некоректные данные.'));
-      }
-      return next(err);
-    });
+    .orFail(() => new NotFoundError('Пользователь не найден'))
+    .then((user) => res.send(user))
+    .catch(next);
 };
 
 const getUserMe = (req, res, next) => {

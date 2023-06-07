@@ -5,10 +5,10 @@ const { URL_REGEX } = require('../app');
 
 const {
   getUsers,
+  getUserMe,
   getUserById,
   updateUser,
   updateAvatar,
-  getUserMe,
 } = require('../controllers/users');
 
 userRouter.get('/users', getUsers);
