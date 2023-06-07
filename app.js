@@ -7,11 +7,14 @@ const {
   notFoundError,
 } = require('./errors/errors');
 
+const {
+  createUser,
+  login,
+} = require('./controllers/users');
+
 const router = require('./routes');
 
 const app = express();
-
-app.use(auth);
 
 app.use(helmet());
 
@@ -24,6 +27,12 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
 );
+
+app.post('/signin', login);
+
+app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use(router);
 
