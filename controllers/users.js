@@ -58,7 +58,7 @@ const getUserMe = (req, res, next) => {
   }).catch(next);
 };
 
-const createUser = (req, res, next) => {
+function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
