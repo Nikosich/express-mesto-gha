@@ -1,8 +1,6 @@
 const router = require('express').Router();
 
-const authRouter = require('express').Router();
-
-const noWhereRouter = require('express').Router();
+const auth = require('../middlewares/auth');
 
 const userRouter = require('./users');
 
@@ -20,16 +18,16 @@ const {
   validateSignin,
 } = require('../middlewares/validate');
 
-noWhereRouter.use('*', (req, res, next) => {
+router.post('/signup', validateSignup, createUser);
+
+router.post('/signin', validateSignin, login);
+
+router.use(userRouter, auth);
+
+router.use(cardRouter, auth);
+
+router.use('*', (req, res, next) => {
   next(new NotFoundError('Такой страницы не существует'));
 });
-
-authRouter.post('/signup', validateSignup, createUser);
-
-authRouter.post('/signin', validateSignin, login);
-
-router.use(userRouter);
-
-router.use(cardRouter);
 
 module.exports = router;

@@ -3,14 +3,9 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
 const router = require('./routes');
-
-const authRouter = require('./routes');
-
-const noWhereRouter = require('./routes');
 
 const app = express();
 
@@ -28,12 +23,6 @@ app.use(helmet());
 
 app.use(bodyParser.json());
 
-app.use(authRouter);
-
-app.use(noWhereRouter);
-
-app.use(auth);
-// роуты, которым нужна авторизация
 app.use(router);
 
 app.use(errors());
