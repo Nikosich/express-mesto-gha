@@ -2,8 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors  } = require('celebrate');
 const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/errorHandler');
 
 const {
   notFoundError,
@@ -55,10 +56,15 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
+app.use(auth);
+
 app.use(router);
 
 app.use('*', (req, res) => {
   res.status(notFoundError).send({ message: 'Такой страницы нет' });
 });
+
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(3000, () => console.log('started'));
