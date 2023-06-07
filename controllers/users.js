@@ -66,7 +66,6 @@ const getUserById = (req, res, next) => {
     });
 };
 
-
 const getUserMe = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id).then((user) => {
