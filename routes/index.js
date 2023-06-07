@@ -1,3 +1,5 @@
+const express = require('express');
+
 const router = require('express').Router();
 
 const auth = require('../middlewares/auth');
@@ -7,6 +9,8 @@ const userRouter = require('./users');
 const cardRouter = require('./cards');
 
 const NotFoundError = require('../errors/NotFoundError');
+
+router.all('*', express.json());
 
 const {
   createUser,
