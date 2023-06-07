@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
 const router = require('./routes');
@@ -23,8 +22,6 @@ mongoose.connect(
 app.use(helmet());
 
 app.use(bodyParser.json());
-
-app.use(auth);
 
 app.use(router);
 

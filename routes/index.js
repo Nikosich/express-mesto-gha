@@ -4,6 +4,8 @@ const userRouter = require('./users');
 
 const cardRouter = require('./cards');
 
+const auth = require('../middlewares/auth');
+
 const NotFoundError = require('../errors/NotFoundError');
 
 const {
@@ -23,6 +25,8 @@ router.use('*', (req, res, next) => {
 router.post('/signup', validateSignup, createUser);
 
 router.post('/signin', validateSignin, login);
+
+router.use(auth);
 
 router.use(userRouter);
 
