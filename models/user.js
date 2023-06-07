@@ -40,22 +40,28 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
+  {
+    versionKey: false,
+    statics: {
+      findUserByCredentials(email, password) {
+        return this
+          .findOne({ email })
+          .select('+password')
+          .then((user) => {
+            if (user) {
+              return bcrypt.compare(password, user.password)
+                .then((matched) => {
+                  if (matched) return user;
 
-  { versionKey: false },
+                  return Promise.reject();
+                });
+            }
+
+            return Promise.reject();
+          });
+      },
+    },
+  },
 );
-
-userSchema.statics.findUserByCredentials = function (email, password, res) {
-  return this.findOne({ email }).select('+password').then((user) => {
-    if (!user) {
-      throw res.status(401).send({ message: 'Не авторизованный пользователь' });
-    }
-    return bcrypt.compare(password, user.password).then((matched) => {
-      if (!matched) {
-        throw res.status(401).send({ message: 'Не авторизованный пользователь' });
-      }
-      return user;
-    });
-  });
-};
 
 module.exports = mongoose.model('user', userSchema);
