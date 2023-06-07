@@ -30,7 +30,7 @@ const deleteCard = (req, res, next) => {
     /* eslint-disable consistent-return */
     .then((card) => {
       if (!card) {
-        return next(new ReqError('Некоректные данные.'));
+        return next(new NotFoundError('Такой карточки нет.'));
       }
       if (card.owner.valueOf() !== _id) {
         return next(new ForbiddenError('Чужую карточку удалять нельзя'));
@@ -56,7 +56,7 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return next(new ReqError('Некоректные данные.'));
+        return next(new NotFoundError('Такой карточки нет.'));
       }
       return res.status(200).send(card);
     })

@@ -7,14 +7,6 @@ const ReqError = require('../errors/ReqError');
 const NotFoundError = require('../errors/NotFoundError');
 const AuthorizationError = require('../errors/AuthorizationError');
 
-const {
-
-  reqError,
-
-  notFoundError,
-
-} = require('../errors/errors');
-
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -45,23 +37,17 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-
-    .orFail(new Error('NotValidId'))
-
     .then((user) => {
-      res.status(200).send(user);
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.send({ data: user });
     })
-
     .catch((err) => {
-      if (err.message === 'NotValidId') {
-        return res
-          .status(notFoundError)
-          .send({ message: 'Пользователь не найден' });
+      if (err.name === 'CastError') {
+        return next(new ReqError('Некорректные данные'));
       }
 
-      if (err.name === 'CastError') {
-        return res.status(reqError).send({ message: 'Некорректные данные' });
-      }
       return next(err);
     });
 };
