@@ -58,28 +58,39 @@ const getUserMe = (req, res, next) => {
   }).catch(next);
 };
 
-function createUser(req, res, next) {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
-  bcrypt.hash(password, 10)
+const createUser = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    next(new ReqError('Некоректные данные.'));
+  }
+
+  return User.findOne({ email }).then((user) => {
+    if (user) {
+      next(new ConflictError('Пользователь с таким email зарегеситрирован'));
+    }
+
+    return bcrypt.hash(password, 10);
+  })
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      email,
+      password: hash,
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
     }))
-    .then((user) => {
-      const { _id } = user;
-      return res.status(201).send({
-        email, name, about, avatar, _id,
-      });
-    })
+    .then((user) => res.status(200).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      _id: user._id,
+      email: user.email,
+    }))
     .catch((err) => {
-      if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email зарегеситрирован'));
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new ReqError('Некоректные данные.'));
-      } else {
-        next(err);
       }
+      return next(err);
     });
 };
 
