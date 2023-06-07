@@ -13,13 +13,9 @@ const {
 
 userRouter.get('/users', getUsers);
 
-userRouter.get('/users/:userId', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().length(24).hex().required(),
-  }),
-}), getUserById);
-
 userRouter.get('/users/me', getUserMe);
+
+userRouter.get('/users/:userId', getUserById);
 
 userRouter.patch('/users/me', celebrate({
   body: Joi.object().keys({
