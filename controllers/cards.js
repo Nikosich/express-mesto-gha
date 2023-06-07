@@ -1,15 +1,12 @@
 const Card = require('../models/card');
-
-const {
-  reqError,
-  notFoundError,
-  serverError,
-} = require('../errors/errors');
+const ReqError = require('../errors/ReqError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(serverError).send({ message: 'Ошибка сервера' }))
+    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }))
     .catch(next);
 };
 
@@ -20,7 +17,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(reqError).send({ message: 'Некорректные данные' });
+        return next(new ReqError('Некоректные данные.'));
       }
       return next(err);
     });
@@ -33,10 +30,10 @@ const deleteCard = (req, res, next) => {
     /* eslint-disable consistent-return */
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
+        return next(new ReqError('Некоректные данные.'));
       }
       if (card.owner.valueOf() !== _id) {
-        return res.status(403).send({ message: 'Чужуж карточку удалить нельзя' });
+        return next(new ForbiddenError('Чужую карточку удалять нельзя'));
       }
       Card.findByIdAndRemove(cardId)
         .then((deletedCard) => res.status(200).send(deletedCard))
@@ -44,7 +41,7 @@ const deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(reqError).send({ message: 'Некорректные данные' });
+        return next(new ReqError('Некоректные данные.'));
       }
 
       return next(err);
@@ -59,13 +56,13 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
+        return next(new ReqError('Некоректные данные.'));
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(reqError).send({ message: 'Некорректные данные' });
+        return next(new ReqError('Некоректные данные.'));
       }
 
       return next(err);
@@ -80,13 +77,13 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(notFoundError).send({ message: 'Карточка не найдена' });
+        return next(new NotFoundError('Карточка не найден'));
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(reqError).send({ message: 'Некорректные данные' });
+        return next(new ReqError('Некоректные данные.'));
       }
 
       return next(err);
