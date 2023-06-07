@@ -21,13 +21,12 @@ const login = (req, res, next) => {
           if (!isValidPassword) {
             return next(new ReqError('Некоректные данные.'));
           }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secretKey', { expiresIn: '7d' });
           return res.status(200).send({ token });
         });
     })
     .catch(next);
 };
-
 
 const getUsers = (req, res) => {
   User.find({})
