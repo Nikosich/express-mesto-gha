@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -23,8 +22,6 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
 );
-
-app.use(cors);
 
 app.use(helmet());
 
