@@ -1,7 +1,5 @@
 const router = require('express').Router();
 
-const cors = require('cors');
-
 const auth = require('../middlewares/auth');
 
 const userRouter = require('./users');
@@ -19,21 +17,6 @@ const {
   validateSignup,
   validateSignin,
 } = require('../middlewares/validate');
-
-const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://mesto.nksch.nomoredomains.rocks',
-  'https://mesto.nksch.nomoredomains.rocks',
-  'http://62.84.113.201:3000',
-];
-
-router.use(cors({
-  origin: allowedCors,
-  credentials: true,
-}));
 
 router.get('/crash-test', () => {
   setTimeout(() => {
