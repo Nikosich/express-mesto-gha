@@ -1,10 +1,24 @@
-// eslint-disable-next-line consistent-return
+const allowedCors = [
+  'http://mesto.nksch.nomoredomains.rocks',
+  'https://mesto.nksch.nomoredomains.rocks',
+  'http://localhost:3000',
+  'https://localhost:3000',
+];
+
+const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
 module.exports = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Access-Control-Allow-Headers', '*');
-    return res.end();
+  const { origin } = req.headers;
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+  res.header('Access-Control-Allow-Credentials', true);
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    res.end();
   }
   next();
 };
