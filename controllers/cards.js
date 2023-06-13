@@ -6,7 +6,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.status(200).send(cards.reverse()))
     .catch(() => res.status(500).send({ message: 'Ошибка сервера' }))
     .catch(next);
 };
