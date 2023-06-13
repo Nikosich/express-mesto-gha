@@ -27,8 +27,6 @@ app.use(helmet());
 
 app.use(bodyParser.json());
 
-app.use(cors());
-
 app.use(requestLogger);
 
 app.use(router);
