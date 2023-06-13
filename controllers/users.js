@@ -64,16 +64,6 @@ const getUserMe = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    next(new ReqError('Некоректные данные.'));
-  }
-
-  return User.findOne({ email }).then((user) => {
-    if (user) {
-      next(new ConflictError('Этот email уже зарегестрирован'));
-    }
-
     return bcrypt.hash(password, 10);
   })
     .then((hash) => User.create({
@@ -92,6 +82,7 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
+        console.log(err.code)
         return next(new ReqError('Некоректные данные.'));
       }
       if (err.code === 11000) {
