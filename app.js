@@ -14,10 +14,10 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+const { PORT = 3000 } = process.env;
 
 mongoose.connect(
-  DB_URL,
+  'mongodb://127.0.0.1:27017/mestodb',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
