@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const path = require('path');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cors = require('./middlewares/cors');
@@ -12,8 +11,6 @@ const router = require('./routes');
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'build')));
-
 const { PORT = 3000 } = process.env;
 
 mongoose.connect(
@@ -23,6 +20,8 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
 );
+
+app.use(express.json());
 
 app.use(cors);
 
