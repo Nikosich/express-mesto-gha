@@ -1,10 +1,11 @@
-require('dotenv').config();
+require('dotenv').config({path: __dirname + '/.env'});
 
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const path = require('path');
 const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
