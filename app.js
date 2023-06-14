@@ -9,6 +9,10 @@ const cors = require('cors');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+console.log(process.env.NODE_ENV);
+
+console.log(process.env.JWT_SECRET);
+
 const router = require('./routes');
 
 const app = express();
