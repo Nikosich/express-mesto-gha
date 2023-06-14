@@ -22,8 +22,8 @@ const login = (req, res, next) => {
           if (!isValidPassword) {
             return next(new AuthorizationError('Неверные данные'));
           }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secretKey', { expiresIn: '7d' });
-          return res.status(200).send({ token });
+          const jwt = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'secretKey', { expiresIn: '7d' });
+          return res.status(200).send({ jwt });
         });
     })
     .catch(next);
